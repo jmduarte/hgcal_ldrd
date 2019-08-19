@@ -26,7 +26,8 @@ n_iters = 6
 
 from EdgeNet import EdgeNet
 
-device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
+#device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('using device %s'%device)
 
 def get_model_fname(model):
@@ -116,7 +117,7 @@ def test(model,loader,total):
 
 def main(args):    
     
-    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'training_data', 'single_photon')
+    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', '..', 'data', 'npz', 'partGun_PDGid15_x1000_Pt3.0To100.0_NTUP_1')
     full_dataset = HitGraphDatasetG(path, directed=directed)
     fulllen = len(full_dataset)
     tv_frac = 0.10
@@ -147,6 +148,7 @@ def main(args):
     print('Training with %s samples'%train_samples)
     print('Validating with %s samples'%valid_samples)
 
+    stale_epochs = 0
     for epoch in range(0, n_epochs):
         epoch_loss = train(model, optimizer, epoch, train_loader, train_samples)
         valid_loss, valid_acc, valid_eff, valid_fp, valid_fn, valid_pur = test(model, valid_loader, valid_samples)
@@ -162,6 +164,13 @@ def main(args):
             modpath = osp.join(os.getcwd(),model_fname+'.best.pth')
             print('New best model saved to:',modpath)
             torch.save(model.state_dict(),modpath)
+            stale_epochs = 0
+        else:
+            print('Stale epoch')
+            stale_epochs += 1
+        if stale_epochs >= patience:
+            print('Early stopping after %i stale epochs'%patience)
+            break
         
     modpath = osp.join(os.getcwd(),model_fname+'.final.pth')
     print('Final model saved to:',modpath)

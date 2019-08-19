@@ -32,13 +32,15 @@ batch_size = 1
 hidden_dim = 64
 n_iters = 6
 
-device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
+#device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('using device %s'%device)
 
 def main(args):
     
     directed = False
-    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'training_data', 'single_photon')
+    #path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'training_data', 'single_photon')
+    path = osp.join(osp.dirname(osp.realpath(__file__)), '..', '..', 'data', 'npz', 'partGun_PDGid15_x1000_Pt3.0To100.0_NTUP_1')
     full_dataset = HitGraphDatasetG(path, directed=directed)
     fulllen = len(full_dataset)
     tv_frac = 0.10

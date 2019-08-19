@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.spatial import cKDTree
 import tqdm
 
-Graph = namedtuple('Graph', ['X', 'Ri', 'Ro', 'y','simmatched'])
+Graph = namedtuple('Graph', ['X', 'Ri', 'Ro', 'y', 'simmatched'])
 
 SparseGraph = namedtuple('SparseGraph',
         ['X', 'Ri_rows', 'Ri_cols', 'Ro_rows', 'Ro_cols', 'y', 'simmatched'])
